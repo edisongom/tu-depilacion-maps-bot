@@ -1,0 +1,31 @@
+name: Upload to Google Maps
+
+on:
+  schedule:
+    # Every Thursday at 9 AM UTC
+    - cron: '0 9 * * 4'
+  workflow_dispatch:
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Install dependencies
+        run: |
+          pip install google-auth google-api-core
+      
+      - name: Upload to Google Maps
+        env:
+          GOOGLE_MAPS_CREDENTIALS: ${{ secrets.GOOGLE_MAPS_CREDENTIALS }}
+          BUSINESS_LOCATION_ID: ${{ secrets.BUSINESS_LOCATION_ID }}
+          CONTENT_DIR: /mnt/project-files/contenido
+        run: python upload_maps.py
+
